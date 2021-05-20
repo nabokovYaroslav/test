@@ -8,7 +8,7 @@ def rename_file(instance, filename):
   return 'homeworks_files/{}.{}'.format(filename, file_type)
 
 class Homework(models.Model):
-  lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+  lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE)
   title = models.CharField(max_length=255)
   description = models.TextField()
   start_at = models.DateTimeField()

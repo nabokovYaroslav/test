@@ -8,8 +8,8 @@ def get_course_detail(self):
   return get_object_or_404(Course, pk=self.kwargs['pk'])
 
 def get_lessons_list(self):
-  return get_list_or_404(Lesson.objects.select_related('course'), course=self.kwargs['course_pk'])
+  course = self.kwargs['pk']
+  return get_list_or_404(Lesson.objects.select_related('course').select_related('homework'), course=course)
 
 def get_lesson_detail(self):
-  #not working
-  return Lesson.objects.select_related('course').get(pk=self.kwargs['pk'], course = self.kwargs['course_pk'])
+  return get_object_or_404(Lesson.objects.select_related('course'), pk=self.kwargs['pk'], course = self.kwargs['course_pk'])

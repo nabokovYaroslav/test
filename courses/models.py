@@ -26,7 +26,7 @@ class Lesson(models.Model):
   description = models.CharField(max_length=255)
   course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
-  
+
   def __str__(self):
       return self.title
   

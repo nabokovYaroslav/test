@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -6,6 +7,8 @@ from permissions.permisions import IsSubscribed, IsSubscribedOrIsAdmin
 from courses.models import Course, Lesson
 from .serializers import CourseSerializer, LessonSerializer
 from courses.selectors import get_courses_list, get_course_detail, get_lessons_list, get_lesson_detail
+from tests.models import UserTest
+from homeworks.models import UserHomework
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -24,7 +27,12 @@ class CourseViewSet(viewsets.ModelViewSet):
     if(not course.available):
       return Response({'status': 'course is not available (course was started)'}, status=status.HTTP_403_FORBIDDEN)
     user.courses.add(course)
-    user.save()
+    lessons = get_lessons_list(self)
+    for lesson in lessons:
+      user_homework = UserHomework(user=user, homework=lesson.homework)
+      user_test = UserTest(test=lesson.test, user=user)
+      user_homework.save()
+      user_test.save()
     return Response({'status': 'subscribed'}, status=status.HTTP_200_OK)
 
 
@@ -39,7 +47,10 @@ class CourseViewSet(viewsets.ModelViewSet):
     if(not course.available):
       return Response({'status': 'you can not unsubscribe (course was started)'}, status=status.HTTP_403_FORBIDDEN)
     user.courses.remove(course)
-    user.save()
+    user_homeworks = UserHomework.objects.filter(user=user)
+    user_homeworks.delete()
+    user_tests = UserTest.objects.filter(user=user)
+    user_tests.delete()
     return Response({'status': 'unsubscriped'}, status=status.HTTP_200_OK)
 
 class LessonViewSet(viewsets.ModelViewSet):

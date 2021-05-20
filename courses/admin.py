@@ -1,12 +1,13 @@
 from django.contrib import admin
 
 from courses.models import Course, Lesson
-from tests.models import Test
+from tests.models import Test, UserTest
 from theories.models import Theory
 from homeworks.models import Homework, UserHomework, UserHomeworkAnswer, UserHomoworkAnswerReview
 admin.site.register(Course)
 admin.site.register(Lesson)
 admin.site.register(Test)
+admin.site.register(UserTest)
 admin.site.register(Theory)
 admin.site.register(Homework)
 admin.site.register(UserHomework)
